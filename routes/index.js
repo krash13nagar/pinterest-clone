@@ -5,6 +5,9 @@ const userModel=require('./users');
 const postModel=require('./post')
 const localStrategy = require('passport-local');
 const upload=require('./multer');
+const {v4:uuidv4} = require('uuid');
+const path=require('path');
+const { uploadBytes,getStorage,ref, getDownloadURL } = require('firebase/storage');
 
 
 passport.use(new localStrategy(userModel.authenticate()));
@@ -42,11 +45,17 @@ router.get('/add',isLoggedIn,async function(req, res, next) {
 
 router.post('/createpost',isLoggedIn,upload.single("postimage"),async function(req, res, next) {
   const user=await userModel.findOne({username:req.session.passport.user});
+  const unique=uuidv4();
+ const filename=unique+path.extname(req.file.originalname);
+ const storage=getStorage();
+ const imageRef=ref(storage,filename);
+ const uploadTask=await uploadBytes(imageRef,req.file.buffer);
+ const downloadTask=await getDownloadURL(imageRef);
   const post=await postModel.create({
     user:user._id,
     title:req.body.title,
     description:req.body.description,
-    image:req.file.filename
+    image:downloadTask
   });
   user.posts.push(post._id);
   await user.save();
@@ -56,8 +65,14 @@ router.post('/createpost',isLoggedIn,upload.single("postimage"),async function(r
 
 router.post('/fileupload',isLoggedIn,upload.single("image"),async function(req, res, next) {
  const user=await userModel.findOne({username:req.session.passport.user});
+ const unique=uuidv4();
+ const filename=unique+path.extname(req.file.originalname);
+const storage=getStorage();
+const imageRef=ref(storage,filename);
+const uploadTask=await uploadBytes(imageRef,req.file.buffer);
+const downloadTask=await getDownloadURL(imageRef);
 
- user.profileImage=req.file.filename;
+ user.profileImage=downloadTask;
 
  await user.save();
  res.redirect("/profile");
@@ -105,12 +120,5 @@ function isLoggedIn(req, res, next){
   }
   res.redirect("/");
 };
-
-
-
-
-
-
-
 
 module.exports = router;

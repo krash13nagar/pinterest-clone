@@ -9,7 +9,7 @@
                 <i class="text-zinc-800 ri-pencil-fill"></i>
             </span>
             <div class="w-32 h-32 bg-zinc-200 rounded-full overflow-hidden">
-                <img class="w-full h-full object-cover" src="/images/uploads/<%=user.profileImage %>" >
+                <img class="w-full h-full object-cover" src="<%=user.profileImage %>" >
             </div>
         </div>
         <h1 class="text-3xl font-semibold mt-5"><%= user.name %></h1>
@@ -20,7 +20,7 @@
     <div class="cards flex flex-wrap gap-10 px-10 mt-10">
         <div class="card">
             <div class="w-52 h-40 bg-zinc-200 rounded-lg overflow-hidden">
-                <img class="w-full h-full object-cover" src="/images/uploads/<%=user?.posts[0]?.image %>" >
+                <img class="w-full h-full object-cover" src="<%=user?.posts[0]?.image %>" >
             </div>
             <a href="/show/posts" class="inline-block text-xl font-semibold mt-3">Your Uploaded Pins</a>
             <h5 class="text-sm font-medium opacity-60"><%= user.posts.length%></h5>

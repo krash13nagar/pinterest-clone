@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const passport = require('passport');
 const dotenv=require('dotenv').config();
+require('./firebaseclient');
 
 var app = express();
 
